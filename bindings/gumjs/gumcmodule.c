@@ -879,6 +879,7 @@ gum_cmodule_gcc_ops = {
 const GumCModuleOps *
 gum_cmodule_get_ops (const gchar * name)
 {
+  return &gum_cmodule_gcc_ops;
 #ifdef HAVE_TINYCC
   if (!name || strcmp (name, "tcc") == 0)
     return &gum_cmodule_tcc_ops;
