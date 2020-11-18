@@ -83,6 +83,8 @@
 #    define GUM_TEST_SHLIB_ARCH "mips"
 #  endif
 # endif
+#elif defined (HAVE_S390X)
+# define GUM_TEST_SHLIB_ARCH "s390x"
 #else
 # error Unknown CPU
 #endif

@@ -76,6 +76,8 @@ gum_unw_backtracer_generate (GumBacktracer * backtracer,
     return_addresses->items[0] = GSIZE_TO_POINTER (cpu_context->lr);
 #elif defined (HAVE_MIPS)
     return_addresses->items[0] = GSIZE_TO_POINTER (cpu_context->ra);
+#elif defined (HAVE_S390X)
+    return_addresses->items[0] = GSIZE_TO_POINTER (cpu_context->gprs[14]);
 #else
 # error Unsupported architecture
 #endif
@@ -252,6 +254,8 @@ gum_cpu_context_to_unw (const GumCpuContext * ctx,
   uc->uc_mcontext.mdlo = ctx->lo;
 
   uc->uc_mcontext.pc = ctx->pc;
+#elif defined (UNW_TARGET_S390X)
+  g_assert_not_reached ();
 #else
 # error FIXME
 #endif

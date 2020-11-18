@@ -15,6 +15,7 @@
 #include <gum/arch-arm/gumthumbwriter.h>
 #include <gum/arch-arm64/gumarm64writer.h>
 #include <gum/arch-mips/gummipswriter.h>
+#include <gum/arch-s390x/gums390xwriter.h>
 #include <gum/gumdefs.h>
 #include <gum/gumeventsink.h>
 #include <gum/gumprocess.h>

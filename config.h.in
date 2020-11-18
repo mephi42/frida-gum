@@ -60,6 +60,9 @@
 /* Define to 1 if target is MIPS based. */
 #mesondefine HAVE_MIPS
 
+/* Define to 1 if target is an IBM Z. */
+#mesondefine HAVE_S390X
+
 /* Define if your compiler supports pointer authentication. */
 #mesondefine HAVE_PTRAUTH
 

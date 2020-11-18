@@ -11,6 +11,8 @@
 # include "arch-arm64/gumarm64writer.h"
 #elif defined (HAVE_MIPS)
 # include "arch-mips/gummipswriter.h"
+#elif defined (HAVE_S390X)
+# include "arch-mips/gums390xwriter.h"
 #endif
 
 #include <capstone.h>

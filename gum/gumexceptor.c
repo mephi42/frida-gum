@@ -445,6 +445,8 @@ gum_exceptor_handle_scope_exception (GumExceptionDetails * details,
 
   /* Dummy return address (we won't return) */
   context->ra = 1337;
+#elif defined (HAVE_S390X)
+  g_assert_not_reached ();
 #else
 # error Unsupported architecture
 #endif

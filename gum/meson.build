@@ -73,6 +73,8 @@ gum_sources = [
   'arch-arm64/gumarm64relocator.c',
   'arch-mips/gummipswriter.c',
   'arch-mips/gummipsrelocator.c',
+  'arch-s390x/gums390xwriter.c',
+  'arch-s390x/gums390xrelocator.c',
 ]
 
 if host_os_family == 'windows'
@@ -249,6 +251,19 @@ if host_arch == 'mips'
   ]
 endif
 
+gum_s390x_headers = [
+  'arch-s390x/gums390xwriter.h',
+  'arch-s390x/gums390xrelocator.h',
+]
+if host_arch == 's390x'
+  gum_sources += [
+    'backend-s390x/gumcpucontext-s390x.c',
+    'backend-s390x/guminterceptor-s390x.c',
+    'backend-s390x/gumspinlock-s390x.c',
+    'backend-s390x/gumstalker-s390x.c',
+  ]
+endif
+
 if unwind_dep.found()
   gum_headers += [
     'backend-libunwind/gumunwbacktracer.h',
@@ -269,6 +284,7 @@ install_headers(gum_x86_headers, subdir: install_header_subdir + '/arch-x86')
 install_headers(gum_arm_headers, subdir: install_header_subdir + '/arch-arm')
 install_headers(gum_arm64_headers, subdir: install_header_subdir + '/arch-arm64')
 install_headers(gum_mips_headers, subdir: install_header_subdir + '/arch-mips')
+install_headers(gum_s390x_headers, subdir: install_header_subdir + '/arch-s390x')
 
 gum = library('frida-gum-' + api_version, gum_sources,
   c_args: frida_component_cflags,

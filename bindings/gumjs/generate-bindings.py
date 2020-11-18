@@ -22,6 +22,7 @@ def generate_and_write_bindings(source_dir, output_dir):
         ("arm", "thumb"),
         ("arm64", "arm64"),
         ("mips", "mips"),
+        ("s390x", "s390x"),
     ]
 
     tsds = {}
@@ -80,6 +81,7 @@ def generate_umbrella(runtime, name, section, flavor_combos):
         "arm": "HAVE_ARM",
         "arm64": "HAVE_ARM64",
         "mips": "HAVE_MIPS",
+        "s390x": "HAVE_S390X",
     }
 
     current_arch = None
@@ -334,7 +336,7 @@ def generate_quick_wrapper_code(component, api):
             elif method.return_type == "GumAddress":
                 lines.append("  return _gum_quick_native_pointer_new (ctx, GSIZE_TO_POINTER (result), core);")
             elif method.return_type == "cs_insn *":
-                if component.flavor == "x86":
+                if component.flavor in ("x86", "s390x"):
                     target = "GSIZE_TO_POINTER (result->address)"
                 else:
                     target = "self->impl->input_start + (result->address -\n            (self->impl->input_pc - self->impl->inpos))"
@@ -1162,7 +1164,7 @@ GUMJS_DEFINE_GETTER ({gumjs_function_prefix}_get_eoi)
 }}
 """
 
-    if component.flavor == "x86":
+    if component.flavor in ("x86", "s390x"):
         target = "GSIZE_TO_POINTER (self->input->insn->address)"
     else:
         target = "self->impl->input_start +\n        (self->input->insn->address -\n            (self->impl->input_pc - self->impl->inpos))"
@@ -1347,7 +1349,7 @@ def generate_v8_wrapper_code(component, api):
             elif method.return_type == "GumAddress":
                 lines.append("  info.GetReturnValue ().Set (_gum_v8_native_pointer_new (GSIZE_TO_POINTER (result), core));")
             elif method.return_type == "cs_insn *":
-                if component.flavor == "x86":
+                if component.flavor in ("x86", "s390x"):
                     target = "GSIZE_TO_POINTER (result->address)"
                 else:
                     target = "self->impl->input_start + (result->address - (self->impl->input_pc - self->impl->inpos))"
@@ -2148,7 +2150,7 @@ static const GumV8Property {gumjs_function_prefix}_values[] =
 }};
 """
 
-    if component.flavor == "x86":
+    if component.flavor in ("x86", "s390x"):
         target = "GSIZE_TO_POINTER (self->input->insn->address)"
     else:
         target = "self->impl->input_start + (self->input->insn->address - (self->impl->input_pc - self->impl->inpos))"
@@ -2200,6 +2202,7 @@ arch_names = {
     "arm": "ARM",
     "arm64": "AArch64",
     "mips": "MIPS",
+    "s390x": "S390X",
 }
 
 writer_enums = {
@@ -2288,6 +2291,12 @@ writer_enums = {
             "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
             "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
             "30", "31",
+        ]),
+    ],
+    "s390x": [
+        ("s390x_register", "sysz_reg", "SYSZ_REG_", [
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "10", "11", "12", "13", "14", "15",
         ]),
     ],
 }
@@ -2989,7 +2998,7 @@ class MethodArgument(object):
         name_raw = None
         converter = None
 
-        if type in ("GumCpuReg", "arm_reg", "arm64_reg", "mips_reg"):
+        if type in ("GumCpuReg", "arm_reg", "arm64_reg", "mips_reg", "sysz_reg"):
             self.type_raw = "const gchar *"
             self.type_format = "s"
             self.type_ts = to_camel_case("x86_register" if type == "GumCpuReg" else type.replace("_reg", "_register"), start_high=True)

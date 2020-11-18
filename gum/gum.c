@@ -731,6 +731,7 @@ gum_cpu_type_get_type (void)
       { GUM_CPU_ARM, "GUM_CPU_ARM", "arm" },
       { GUM_CPU_ARM64, "GUM_CPU_ARM64", "arm64" },
       { GUM_CPU_MIPS, "GUM_CPU_MIPS", "mips" },
+      { GUM_CPU_S390X, "GUM_CPU_S390X", "s390x" },
       { 0, NULL, NULL }
     };
     GType etype;

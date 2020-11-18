@@ -15,7 +15,15 @@ G_BEGIN_DECLS
 
 typedef union _GumFFIValue GumFFIValue;
 
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+/*
+ * s390x is big-endian, but there libffi operates with pointers to actual
+ * types, so no padding is needed:
+ *
+ *   https://github.com/frida/libffi/blob/183fff603874/src/s390/ffi.c#L400
+ *   https://github.com/frida/libffi/blob/183fff603874/src/s390/ffi.c#L604
+ */
+
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN || defined (HAVE_S390X)
 
 union _GumFFIValue
 {

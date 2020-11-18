@@ -114,6 +114,7 @@ cpu_defines = [
   ['arm', 'HAVE_ARM'],
   ['arm64', 'HAVE_ARM64'],
   ['mips', 'HAVE_MIPS'],
+  ['s390x', 'HAVE_S390X'],
 ]
 foreach d : cpu_defines
   if d.get(0) == host_arch
@@ -327,6 +328,7 @@ gum_incdirs = [
   include_directories('gum/arch-arm'),
   include_directories('gum/arch-arm64'),
   include_directories('gum/arch-mips'),
+  include_directories('gum/arch-s390x'),
   include_directories('libs'),
   include_directories('libs/gum/heap'),
   include_directories('libs/gum/prof'),

@@ -100,6 +100,8 @@ gumjs_generated_origins = [
   'arch-arm64/gumarm64relocator.h',
   'arch-mips/gummipswriter.h',
   'arch-mips/gummipsrelocator.h',
+  'arch-s390x/gums390xwriter.h',
+  'arch-s390x/gums390xrelocator.h',
 ]
 gumjs_generated_inputs = []
 foreach o : gumjs_generated_origins

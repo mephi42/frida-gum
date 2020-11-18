@@ -49,6 +49,9 @@ static const gchar * gum_arm64_vas_to_string (arm64_vas vas);
 #elif defined (HAVE_MIPS)
 static JSValue gum_mips_parse_memory_operand_value (JSContext * ctx,
     const mips_op_mem * mem, csh cs, GumQuickCore * core);
+#elif defined (HAVE_S390X)
+static JSValue gum_s390x_parse_memory_operand_value (JSContext * ctx,
+    const sysz_op_mem * mem, csh cs, GumQuickCore * core);
 #endif
 
 static JSValue gum_parse_regs (JSContext * ctx, const uint16_t * regs,
@@ -1002,6 +1005,92 @@ gum_mips_parse_memory_operand_value (JSContext * ctx,
     JS_DefinePropertyValue (ctx, val,
         GUM_QUICK_CORE_ATOM (core, base),
         JS_NewString (ctx, cs_reg_name (cs, mem->base)),
+        JS_PROP_C_W_E);
+  }
+  JS_DefinePropertyValue (ctx, val,
+      GUM_QUICK_CORE_ATOM (core, disp),
+      JS_NewInt64 (ctx, mem->disp),
+      JS_PROP_C_W_E);
+
+  return val;
+}
+
+#elif defined (HAVE_S390X)
+
+static JSValue
+gum_parse_operands (JSContext * ctx,
+                    const cs_insn * insn,
+                    csh cs,
+                    GumQuickCore * core)
+{
+  JSValue result;
+  const cs_sysz * sysz = &insn->detail->sysz;
+  uint8_t i;
+
+  result = JS_NewArray (ctx);
+
+  for (i = 0; i != sysz->op_count; i++)
+  {
+    const cs_sysz_op * op = &sysz->operands[i];
+    JSValue op_obj;
+    const gchar * type;
+    JSValue val;
+
+    op_obj = JS_NewObject (ctx);
+
+    switch (op->type)
+    {
+      case SYSZ_OP_REG:
+        type = "reg";
+        val = JS_NewString (ctx, cs_reg_name (cs, op->reg));
+        break;
+      case SYSZ_OP_IMM:
+        type = "imm";
+        val = JS_NewInt64 (ctx, op->imm);
+        break;
+      case SYSZ_OP_MEM:
+        type = "mem";
+        val = gum_s390x_parse_memory_operand_value (ctx, &op->mem, cs, core);
+        break;
+      default:
+        g_assert_not_reached ();
+    }
+
+    JS_DefinePropertyValue (ctx, op_obj,
+        GUM_QUICK_CORE_ATOM (core, type),
+        JS_NewString (ctx, type),
+        JS_PROP_C_W_E);
+    JS_DefinePropertyValue (ctx, op_obj,
+        GUM_QUICK_CORE_ATOM (core, value),
+        val,
+        JS_PROP_C_W_E);
+
+    JS_DefinePropertyValueUint32 (ctx, result, i, op_obj, JS_PROP_C_W_E);
+  }
+
+  return result;
+}
+
+static JSValue
+gum_s390x_parse_memory_operand_value (JSContext * ctx,
+                                      const sysz_op_mem * mem,
+                                      csh cs,
+                                      GumQuickCore * core)
+{
+  JSValue val = JS_NewObject (ctx);
+
+  if (mem->base != SYSZ_REG_INVALID)
+  {
+    JS_DefinePropertyValue (ctx, val,
+        GUM_QUICK_CORE_ATOM (core, base),
+        JS_NewString (ctx, cs_reg_name (cs, mem->base)),
+        JS_PROP_C_W_E);
+  }
+  if (mem->index != SYSZ_REG_INVALID)
+  {
+    JS_DefinePropertyValue (ctx, val,
+        GUM_QUICK_CORE_ATOM (core, index),
+        JS_NewString (ctx, cs_reg_name (cs, mem->index)),
         JS_PROP_C_W_E);
   }
   JS_DefinePropertyValue (ctx, val,

@@ -52,6 +52,8 @@
 # define GumRegs struct user_pt_regs
 #elif defined (HAVE_MIPS)
 # define GumRegs struct pt_regs
+#elif defined (HAVE_S390X)
+# define GumRegs user_pt_regs
 #else
 # error Unsupported architecture
 #endif
@@ -1783,6 +1785,9 @@ gum_linux_cpu_type_from_file (const gchar * path,
     case 0x0008:
       result = GUM_CPU_MIPS;
       break;
+    case 0x0016:
+      result = GUM_CPU_S390X;
+      break;
     default:
       g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
           "Unsupported executable");
@@ -1840,6 +1845,9 @@ gum_linux_cpu_type_from_auxv (gconstpointer auxv,
 #elif defined (HAVE_MIPS)
   cpu32 = GUM_CPU_MIPS;
   cpu64 = GUM_CPU_MIPS;
+#elif defined (HAVE_S390X)
+  cpu32 = -1;
+  cpu64 = GUM_CPU_S390X;
 #else
 # error Unsupported architecture
 #endif
@@ -2108,6 +2116,8 @@ gum_linux_parse_ucontext (const ucontext_t * uc,
   ctx->lo = (guint32) uc->uc_mcontext.mdlo;
 
   ctx->pc = (guint32) uc->uc_mcontext.pc;
+#elif defined (HAVE_S390X)
+  g_assert_not_reached ();
 #else
 # error FIXME
 #endif
@@ -2231,6 +2241,8 @@ gum_linux_unparse_ucontext (const GumCpuContext * ctx,
   uc->uc_mcontext.mdlo = (guint64) ctx->lo;
 
   uc->uc_mcontext.pc = (guint64) ctx->pc;
+#elif defined (HAVE_S390X)
+  g_assert_not_reached ();
 #else
 # error FIXME
 #endif
@@ -2342,6 +2354,8 @@ gum_parse_regs (const GumRegs * regs,
   ctx->lo = regs->lo;
 
   ctx->pc = regs->cp0_epc;
+#elif defined (HAVE_S390X)
+  g_assert_not_reached ();
 #else
 # error Unsupported architecture
 #endif
@@ -2453,6 +2467,10 @@ gum_unparse_regs (const GumCpuContext * ctx,
   regs->lo = ctx->lo;
 
   regs->cp0_epc = ctx->pc;
+#elif defined (HAVE_S390X)
+  regs->psw.addr = ctx->pc;
+  regs->psw.mask = ctx->pswm;
+  gum_memcpy (regs->gprs, ctx->gprs, sizeof (regs->gprs));
 #else
 # error Unsupported architecture
 #endif

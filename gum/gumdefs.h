@@ -33,6 +33,8 @@
 # endif
 #elif defined (__mips__)
 # define GUM_NATIVE_CPU GUM_CPU_MIPS
+#elif defined (__s390x__)
+# define GUM_NATIVE_CPU GUM_CPU_S390X
 #endif
 #ifdef G_OS_WIN32
 # define GUM_NATIVE_ABI            GUM_ABI_WINDOWS
@@ -64,6 +66,7 @@ typedef struct _GumX64CpuContext GumX64CpuContext;
 typedef struct _GumArmCpuContext GumArmCpuContext;
 typedef struct _GumArm64CpuContext GumArm64CpuContext;
 typedef struct _GumMipsCpuContext GumMipsCpuContext;
+typedef struct _GumS390XCpuContext GumS390XCpuContext;
 /*
  * The only non-legacy big-endian configuration on 32-bit ARM systems is BE8.
  * In this configuration, whilst the data is in big-endian, the code stream is
@@ -75,7 +78,8 @@ typedef struct _GumMipsCpuContext GumMipsCpuContext;
 #else
 # define GUM_DEFAULT_CS_ENDIAN CS_MODE_BIG_ENDIAN
 #endif
-#if !defined (__arm__) && !defined (__aarch64__) && !defined (__mips__)
+#if !defined (__arm__) && !defined (__aarch64__) && !defined (__mips__) && \
+    !defined (__s390x__)
 # define GUM_DEFAULT_CS_ARCH CS_ARCH_X86
 # if GLIB_SIZEOF_VOID_P == 4
 #  define GUM_DEFAULT_CS_MODE CS_MODE_32
@@ -104,6 +108,10 @@ typedef GumArm64CpuContext GumCpuContext;
     (CS_MODE_MIPS64 | GUM_DEFAULT_CS_ENDIAN))
 # endif
 typedef GumMipsCpuContext GumCpuContext;
+#elif defined (__s390x__)
+# define GUM_DEFAULT_CS_ARCH CS_ARCH_SYSZ
+# define GUM_DEFAULT_CS_MODE GUM_DEFAULT_CS_ENDIAN
+typedef GumS390XCpuContext GumCpuContext;
 #endif
 typedef guint GumRelocationScenario;
 
@@ -136,7 +144,8 @@ enum _GumCpuType
   GUM_CPU_AMD64,
   GUM_CPU_ARM,
   GUM_CPU_ARM64,
-  GUM_CPU_MIPS
+  GUM_CPU_MIPS,
+  GUM_CPU_S390X
 };
 
 enum _GumCpuFeatures
@@ -292,6 +301,14 @@ struct _GumMipsCpuContext
 
   gsize k0;
   gsize k1;
+};
+
+struct _GumS390XCpuContext
+{
+  guint64 pc;
+  guint64 pswm;
+  guint64 gprs[16];
+  /* TODO: floating point and vector registers */
 };
 
 enum _GumRelocationScenario

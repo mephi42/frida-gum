@@ -365,6 +365,8 @@ TESTCASE (linux_get_cpu_from_auxv_null_32bit)
   cpu32 = GUM_CPU_ARM;
 #elif defined (HAVE_MIPS)
   cpu32 = GUM_CPU_MIPS;
+#elif defined (HAVE_S390X)
+  cpu32 = -1;
 #else
 # error Unsupported architecture
 #endif
@@ -383,6 +385,8 @@ TESTCASE (linux_get_cpu_from_auxv_null_64bit)
   cpu64 = GUM_CPU_ARM64;
 #elif defined (HAVE_MIPS)
   cpu64 = GUM_CPU_MIPS;
+#elif defined (HAVE_S390X)
+  cpu64 = GUM_CPU_S390X;
 #else
 # error Unsupported architecture
 #endif
@@ -420,6 +424,8 @@ TESTCASE (linux_get_cpu_from_auxv_representative_32bit)
   cpu32 = GUM_CPU_ARM;
 #elif defined (HAVE_MIPS)
   cpu32 = GUM_CPU_MIPS;
+#elif defined (HAVE_S390X)
+  cpu32 = -1;
 #else
 # error Unsupported architecture
 #endif
@@ -457,6 +463,8 @@ TESTCASE (linux_get_cpu_from_auxv_representative_64bit)
   cpu64 = GUM_CPU_ARM64;
 #elif defined (HAVE_MIPS)
   cpu64 = GUM_CPU_MIPS;
+#elif defined (HAVE_S390X)
+  cpu64 = GUM_CPU_S390X;
 #else
 # error Unsupported architecture
 #endif

@@ -28,6 +28,8 @@
 # define GUM_SCRIPT_ARCH "arm"
 #elif defined (HAVE_ARM64)
 # define GUM_SCRIPT_ARCH "arm64"
+#elif defined (HAVE_S390X)
+# define GUM_SCRIPT_ARCH "s390x"
 #endif
 
 #if defined (HAVE_LINUX)

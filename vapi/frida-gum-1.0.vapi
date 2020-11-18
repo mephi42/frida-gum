@@ -65,6 +65,7 @@ namespace Gum {
 		ARM,
 		ARM64,
 		MIPS,
+		S390X,
 	}
 
 	[CCode (cprefix = "GUM_PTRAUTH_")]

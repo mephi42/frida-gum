@@ -171,6 +171,9 @@ struct _GumQuickCore
   GUM_DECLARE_ATOM (vectorIndex);
 #elif defined (HAVE_MIPS)
   GUM_DECLARE_ATOM (disp);
+#elif defined (HAVE_S390X)
+  GUM_DECLARE_ATOM (index);
+  GUM_DECLARE_ATOM (disp);
 #endif
 
 #undef GUM_DECLARE_ATOM
