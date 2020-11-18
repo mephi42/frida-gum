@@ -437,6 +437,9 @@ gum_cmodule_new_gcc (const GumCModuleOps * ops, const gchar * source,
   g_ptr_array_add (cmodule->argv, g_strdup ("-fno-pic"));
 #if defined (HAVE_I386)
   g_ptr_array_add (cmodule->argv, g_strdup ("-mcmodel=large"));
+#elif defined (HAVE_S390X)
+  g_ptr_array_add (cmodule->argv, g_strdup ("-march=z10"));
+  g_ptr_array_add (cmodule->argv, g_strdup ("-mlarge-exec"));
 #endif
   g_ptr_array_add (cmodule->argv, g_strdup ("-nostdlib"));
   g_ptr_array_add (cmodule->argv, g_strdup ("-isystem"));
